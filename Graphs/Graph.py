@@ -30,13 +30,14 @@ class Graph:
         stack = []
         seen = set()
         stack.append(start_node)
+        seen.add(start_node)
         while stack:
             currNode = stack.pop()
             print(currNode)
             for neighbor in graph[currNode]:
                 if neighbor not in seen:
-                    seen.add(currNode)
-                    stack.append(currNode)
+                    seen.add(neighbor)
+                    stack.append(neighbor)
             
 
 
