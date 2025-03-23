@@ -72,6 +72,41 @@ class Graph:
                     return True
                     
         return False
+    def findShortestPath(self,graph,srcNode,destNode):
+        '''
+            finding path use breadth-first search
+        '''
+        parentMap = {srcNode:None}
+        seen = {srcNode}
+        queue =[srcNode]
+
+        while queue:
+            curNode = queue.pop(0)
+            
+            for neighbor in graph[curNode]:
+                if neighbor == destNode:
+                    
+                    parentMap[neighbor] = curNode
+                    path = []
+                    x = curNode
+                    path.append(neighbor)
+                    while x!= None:
+
+                        path.append(x)
+                        x = parentMap[x]
+                  
+                  
+                    path = path [::-1]
+                
+                    return path
+                if neighbor not in seen:
+                    seen.add(neighbor)
+                    queue.append(neighbor)
+                    parentMap[neighbor] = curNode
+                
+            
+            
+
     
     def displayCyclePath(self,graph,start_node):
         parent_map = {start_node:None}
@@ -140,6 +175,14 @@ def main():
     'D': ['B'],
     'E': ['B']
     }
+    graph3 = {
+        'A':['B','D',],
+        'B':['A','C',],
+        'C': ["B",'F'],
+        'D':["A","E"],
+        'E': ['D','F'],
+        "F":["E",'C'],
+    }
     g = Graph()
     g.add_edge(1, 2)
     g.add_edge(1, 0)
@@ -147,7 +190,7 @@ def main():
     g.add_edge(2,0)
     g.add_edge(2, 4)
     # g.display()
-    print(g.displayCyclePath(graph,'A'))
+    print(g.findShortestPath(graph3,'A','C'))
 
 if __name__ == "__main__":
     main()
