@@ -1,4 +1,5 @@
 from collections import defaultdict
+from collections import deque
 class Graph:
     def __init__ (self, adjacency_list ={}):
         self.adjacency_list = {}
@@ -39,6 +40,63 @@ class Graph:
                 if neighbor not in seen:
                     seen.add(neighbor)
                     stack.append(neighbor)
+
+    
+    def dfs_recursive(self,graph,node=None):
+        def dfs_visit(node,graph):
+            assert isinstance(graph,dict),"graph is not a dict"
+            for neighbor in graph[node]:
+                if neighbor not in parent:
+                    parent[neighbor] = node
+                    dfs_visit(neighbor,graph)
+        parent = {}
+        if node != None:
+            parent[node]=None
+            dfs_visit(node,graph)
+        else:
+            for node in graph:
+                if node not in parent:
+                    parent[node]= None
+                    dfs_visit(node,graph)
+        return parent
+          
+    def topological_sort(self,graph):
+        '''
+            Retunrs False if no cycle detected, otherwise True for cycle detection
+        '''
+        def dfs_visit(node,graph):
+            assert isinstance(graph,dict),"graph is not a dictionary"
+          
+            if perm_marks[node]:
+                return False
+            if temp_marks[node]:
+                return True
+            temp_marks[node] = True
+            for neighbor in graph[node]:
+               
+               if dfs_visit(neighbor,graph):
+                   return True
+            perm_marks[node] = True
+          
+            sort_list.appendleft(node)
+            return False
+        
+        
+         #left val= temp_mark,right_val= perm_mark
+        temp_marks = defaultdict()
+        perm_marks = defaultdict()
+        for node in graph:
+            temp_marks[node] =False
+            perm_marks[node] =False
+        sort_list = deque()
+        
+    
+        for node in graph:
+            if not temp_marks[node]:
+                if dfs_visit(node,graph):
+                    return "Graph is cyclic, no topological sort possible"
+        return sort_list
+    
     
     def hasCycle(self,graph,start_node):
         '''
@@ -104,10 +162,6 @@ class Graph:
                     queue.append(neighbor)
                     parentMap[neighbor] = curNode
                 
-            
-            
-
-    
     def displayCyclePath(self,graph,start_node):
         parent_map = {start_node:None}
         seen = {start_node}
@@ -183,6 +237,14 @@ def main():
         'E': ['D','F'],
         "F":["E",'C'],
     }
+    dag= {
+        1:[2],
+        2: [3],
+        3:[1],
+    
+    
+
+    }
     g = Graph()
     g.add_edge(1, 2)
     g.add_edge(1, 0)
@@ -190,7 +252,14 @@ def main():
     g.add_edge(2,0)
     g.add_edge(2, 4)
     # g.display()
-    print(g.findShortestPath(graph3,'A','C'))
+    print(g.adjacency_list)
+    print()
+    g.dfs(g.adjacency_list,start_node=1)
+    print()
+    print(g.dfs_recursive(g.adjacency_list,0))
+    print()
+    print(g.topological_sort(dag))
+
 
 if __name__ == "__main__":
     main()
